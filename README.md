@@ -7,7 +7,7 @@ an excellent role created and maintained as part of the [DebOps Project](https:/
 
 ## Role Modifications
 
-** Additional role variables: **
+**Additional role variables:**
 
 - `apt_packages: []` - Install apt packages by role, host or group
 - `apt_host_packages: []`
