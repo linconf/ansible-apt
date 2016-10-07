@@ -31,6 +31,14 @@
     - '{{ apt__packages }}'
   when: apt__enabled|bool
 
+- name: Remove required packages
+  apt:
+    name: '{{ item }}'
+    state: 'absent'
+  with_flattened:
+    - '{{ apt__remove_packages }}'
+  when: apt__enabled|bool
+
 - name: Ensure that APT default configuration is absent
   file:
     path: '/etc/apt/apt.conf'

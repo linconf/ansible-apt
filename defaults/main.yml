@@ -112,9 +112,10 @@ apt__base_packages: [ 'python-apt', 'apt-transport-https' ]
 # .. envvar:: apt__packages [[[
 #
 # List of additional APT packages to install for APT support.
-apt__packages: []
+apt__packages: '{{ apt_packages + apt_host_packages + apt_group_packages }}'
                                                                    # ]]]
                                                                    # ]]]
+apt__remove_packages: '{{ apt_remove_packages + apt_remove_host_packages + apt_remove_group_packages }}'
 # APT repository keys [[[
 # -----------------------
 
