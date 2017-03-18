@@ -21,6 +21,23 @@
   action: setup
   when: (apt__enabled|bool and apt__register_facts|changed)
 
+- name: Configure custom APT repositories
+  apt_repository:
+    update_cache: False
+    repo:     '{{ item.repo }}'
+    mode:     '{{ item.mode     | d(omit) }}'
+    filename: '{{ item.filename | d(omit) }}'
+    state:    '{{ item.state    | d("present"
+                                    if (item.distribution|d(apt__distribution) == apt__distribution and
+                                        item.distribution_release|d(apt__distribution_release) == apt__distribution_release)
+                                    else "absent") }}'
+  with_flattened:
+    - '{{ apt__repositories }}'
+    - '{{ apt__group_repositories }}'
+    - '{{ apt__host_repositories }}'
+  register: apt__register_repositories
+  when: (apt__enabled|bool and item.repo|d())
+
 - name: Install required packages
   apt:
     name: '{{ item }}'
@@ -110,23 +127,6 @@
          (item.state|d("present") == 'present' and
           (item.distribution|d(apt__distribution) == apt__distribution and
            item.distribution_release|d(apt__distribution_release) == apt__distribution_release)))
-
-- name: Configure custom APT repositories
-  apt_repository:
-    update_cache: False
-    repo:     '{{ item.repo }}'
-    mode:     '{{ item.mode     | d(omit) }}'
-    filename: '{{ item.filename | d(omit) }}'
-    state:    '{{ item.state    | d("present"
-                                    if (item.distribution|d(apt__distribution) == apt__distribution and
-                                        item.distribution_release|d(apt__distribution_release) == apt__distribution_release)
-                                    else "absent") }}'
-  with_flattened:
-    - '{{ apt__repositories }}'
-    - '{{ apt__group_repositories }}'
-    - '{{ apt__host_repositories }}'
-  register: apt__register_repositories
-  when: (apt__enabled|bool and item.repo|d())
 
 - name: Remove old unattended-upgrades configuration
   file:
