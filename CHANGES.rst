@@ -19,7 +19,131 @@ new release.
 `debops.apt master`_ - unreleased
 ---------------------------------
 
-.. _debops.apt master: https://github.com/debops/ansible-apt/compare/v0.4.0...master
+.. _debops.apt master: https://github.com/debops/ansible-apt/compare/v0.5.0...master
+
+- Add ``http://security.debian.org`` as a Debian Security repository, so that
+  the fact script can recognize it as such. [drybjed_]
+
+
+`debops.apt v0.5.0`_ - 2017-07-03
+---------------------------------
+
+.. _debops.apt v0.5.0: https://github.com/debops/ansible-apt/compare/v0.4.4...v0.5.0
+
+Added
+~~~~~
+
+- Add the Ansible local fact ``default_sources_map`` which contains a
+  dictionary with distribution name as key containing a list of default sources
+  for each distribution. ``default_mirrors`` is equivalent to
+  ``default_sources_map[apt__distribution]``.  [ypid_]
+
+- Add support for the ARM based BeagleBoard family. Tested with a BeagleBone
+  Black. [ypid_]
+
+- Add support for the `Devuan Jessie <https://devuan.org/>`_ Linux
+  distribution. [evilham]
+
+Changed
+~~~~~~~
+
+- Filter the Ansible local facts ``default_mirrors`` to only provide the
+  default APT mirrors that are relevant to the current OS distribution. This
+  way the list can be used by other Ansible roles for APT mirror information.
+  [drybjed_, ypid_]
+
+- Use debops__tpl_macros.js_ to cleanup redundant code. [ypid_]
+
+- Fix Ansible 2.2 deprecation warnings which requires Ansible 2.2 or higher.
+  Support for older Ansible versions is dropped. [brzhk]
+
+- Update the default variables for Debian Stretch as the new stable release so
+  that backports get enabled for Stretch by default. [ypid_]
+
+Fixed
+~~~~~
+
+- Fix handling of ``option`` and ``options`` from :envvar:`apt__sources` and add
+  missing documentation. [ypid_]
+
+- Properly handle singular and plural options for :envvar:`apt__sources`.
+  Previously certain edge cases might have caused an issue.
+  This has been achieved by cleaning up the templates to map all inputs to the
+  plural variant and eliminating redundant code.
+  Redundancy is the natural enemy of all Ansible role maintainers and should be
+  avoided. [ypid_]
+
+
+`debops.apt v0.4.4`_ - 2017-03-24
+---------------------------------
+
+.. _debops.apt v0.4.4: https://github.com/debops/ansible-apt/compare/v0.4.3...v0.4.4
+
+Changed
+~~~~~~~
+
+- Switch the official Debian repository source to ``http://deb.debian.org/debian``
+  due to `the deprecation of the httpredir service <https://lists.debian.org/debian-mirrors/2017/02/msg00000.html>`_.
+  [drybjed_]
+
+
+`debops.apt v0.4.3`_ - 2016-11-23
+---------------------------------
+
+.. _debops.apt v0.4.3: https://github.com/debops/ansible-apt/compare/v0.4.2...v0.4.3
+
+Added
+~~~~~
+
+- Improve autodetection of APT sources on Raspbian and Ubuntu, as well as
+  Debian Testing/Unstable releases. [grantma_]
+
+
+`debops.apt v0.4.2`_ - 2016-11-22
+---------------------------------
+
+.. _debops.apt v0.4.2: https://github.com/debops/ansible-apt/compare/v0.4.1...v0.4.2
+
+Added
+~~~~~
+
+- Add support for filtering APT distribution sources and repositories according
+  to the system architecture. Only one architecture can be specified at a time
+  for a given source entry. [drybjed_]
+
+- Add :envvar:`apt__distribution_release_map` YAML dictionary which keeps the
+  information about released OS distributions which have official security
+  repositories. [drybjed_]
+
+Changed
+~~~~~~~
+
+- Update the :file:`/etc/apt/sources.list` template so that it tracks
+  repository suites for each URI. This should allow configuration of separate
+  source entries from the same repository but with different suites. [drybjed_]
+
+- The Debian Security repository will be enabled only on official releases, on
+  hosts with Debian Unstable (Sid) it will be automatically disabled.
+  [drybjed_]
+
+- Ubuntu Security repository will be enabled only on supported architectures
+  (``amd64``, ``i386``). On other architectures, Ubuntu Ports Security
+  repository will be enabled instead. [drybjed_]
+
+
+`debops.apt v0.4.1`_ - 2016-11-03
+---------------------------------
+
+.. _debops.apt v0.4.1: https://github.com/debops/ansible-apt/compare/v0.4.0...v0.4.1
+
+Added
+~~~~~
+
+- Add an entry for an alternative Debian Security repository that's present in
+  the :file:`/etc/apt/sources.list` on Debian Stretch. This entry is disabled
+  by default to not include duplicates in the generated sources configuration,
+  but still needs to be present for ``debops.apt`` to recognize it correctly.
+  [drybjed_]
 
 
 `debops.apt v0.4.0`_ - 2016-10-04
@@ -131,7 +255,7 @@ Added
 
 - Added support for both http and https repositories in case of internet proxy.
   Moved ``apt__proxy_url`` to ``apt__http_proxy_url`` and added
-  ``apt__https_proxy_url``. [tallandtree]
+  ``apt__https_proxy_url``. [tallandtree_]
 
 Changed
 ~~~~~~~
